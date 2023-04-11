@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="https://kit.fontawesome.com/d6065b6a9b.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <title>Speech to Email</title>
+</head>
+<body>
+    <header class="hidden">
+        Enter your API keys:
+        <!-- temporary values  -->
+        <div class="keyinputs">
+            <input type="text" id="GPTAPI" placeholder="OpenAI API key..." value="">
+            <button id="GPTCheck">Check</button>
+        </div>
+        <div class="keyinputs">
+            <input type="text" id="DeepLAPI" placeholder="DeepL API key..."value="">
+            <button id="DeepLCheck">Check</button>
+        </div>
+        <i class="fa-solid fa-chevron-up"></i>
+    </header>
+    <section id="options_screen" class="">
+        <h2>0. What do you want to generate?</h2>
+        <div id="type_options" class="options">
+            <div class="input_container">
+                <select id="type">
+                    <option value="email" selected>📧 Email</option>
+                    <option value="code">🖥️ Code</option>
+                    <option value="text">📋 Text</option>
+                    <option value="poem">📜 Poem</option>
+                </select>
+            </div>
+        </div>
+        <h2>1. Select preferred languages</h2>
+        <div id="language_options" class="options">
+            <div class="input_container">
+                <label for="languageFrom"><span>From</span><img id="flagFrom" src="img/flags/4x3/ru.svg" alt="en-US" class="flag"></label>
+                <select id="languageFrom">
+                    <option value="en-US">English</option>
+                    <option value="ru-RU" selected>Russian</option>
+                    <option value="de-DE">German</option>
+                </select>
+            </div>
+            <i class="fa-solid fa-arrow-right-long"></i>
+            <div class="input_container">
+                <label for="languageTo"><span>To</span><img id="flagTo" src="img/flags/4x3/de.svg" alt="en-US" class="flag"></label>
+                <select id="languageTo">
+                    <option value="en-US">English</option>
+                    <option value="ru-RU">Russian</option>
+                    <option value="de-DE" selected>German</option>
+                </select>
+            </div>
+        </div>
+        <h2>2. Use one of the input options</h2>
+        <div id="input_options" class="options">
+            <div class="input_options_wrapper">
+                <button id="text">Text</button>
+            </div>
+            <div class="input_options_wrapper">
+                <button id="prompt">Prompt</button>
+            </div>
+        </div>
+        <h2>3. Add desired tags</h2>
+        <div id="tags_options" class="options"></div>
+        <div id="start">
+            <span>start</span>
+            <i class="fa-solid fa-play"></i>
+        </div>
+    </section>
+    <section id="loading_screen" class="inactive">
+        <div id="loadingAnimation">
+            <i class="fa-solid fa-spinner"></i>
+        </div>
+        <div id="loadingPrompt"></div>
+    </section>
+    <section id="results_screen" class="inactive">
+        <ol id="options_overview">
+            <li id="oo1">Email</li>
+            <li id="oo2">Russian to German</li>
+            <li id="oo3"><a href="#">Text</a></li>
+            <li id="oo4">Formal, Informative, Angry</li>
+        </ol>
+        <div id="result">
+            <div id="btns-container">
+                <button id="copyAll" class="popup">
+                    <i class="fa-regular fa-copy"></i>
+                    <span class="popuptext" id="copyPopup">
+                        Text copied to the clipboard
+                    </span>
+                </button>
+                <button id="goBack">
+                    <i class="fa-solid fa-circle-left"></i>
+                </button>
+            </div>
+            <textarea id="text_output" placeholder="text output"></textarea>
+        </div>
+    </section>
+    <section id="widgets">
+        <div id="text_input_widget" class="widget hidden">
+            <!-- here comes the recording interface with record button, then play button and option to record again -->
+            <div class="close-widget"><i class="fa-solid fa-xmark"></i></div>
+            <div class="widget-title">Speech Recognition 
+                <small>(selected language: 
+                    <span class="sr_selectedLangDisplay"></span>)
+                </small>
+            </div>
+            <div id="audio_controls">
+                <button id="record"><i class="fa-solid fa-circle"></i></button>
+                <button id="stop"><i class="fa-solid fa-stop"></i></button>
+                <!-- <button id="play"><i class="fa-solid fa-play"></i></button>
+                <button id="pause"><i class="fa-solid fa-pause"></i></button> -->
+            </div>
+            <span id="recording_time">00:00</span>
+            <!-- <div id="recording">
+                <span id="recording_time">00:00</span>
+                /
+                <span id="recording_duration">00:00</span>
+                <div id="recording_span">
+                    <div id="recording_progress"></div>
+                </div>
+            </div> -->
+            <br>
+            <div class="widget-title">Text input</div>
+            <textarea id="sr_output" placeholder="Speech recognition text will appear here as you speak"></textarea>
+            <button class="input_submit">Submit</button>
+        </div>
+        <div id="prompt_input_widget" class="widget hidden">
+            <!-- here comes the simple text imput -->
+            <div class="close-widget"><i class="fa-solid fa-xmark"></i></div>
+            <div class="widget-title">Prompt input
+                <small>(selected language: 
+                    <span class="sr_selectedLangDisplay"></span>)
+                </small>
+            </div>
+            <textarea id="prompt_input" placeholder="Type here..."></textarea>
+            <button class="input_submit">Submit</button>
+        </div>
+    </section>
+    <div id="notifications" class="hidden">
+        <div id="notification">
+            <div id="n-title"></div>
+            <div id="n-message"></div>
+            <div id="n-confirm">OK</div>
+        </div>
+    </div>
+    <footer> 
+        <small>
+            © Copyright <span id="year">2023</span>, <a href="https://github.com/AlmostDeadDude" target="_blank" rel="noopener noreferrer">Ivan Shiller</a> 
+        </small> 
+    </footer>
+    <script src="js/script.js"></script>
+</body>
+</html>
